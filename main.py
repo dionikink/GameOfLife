@@ -41,6 +41,8 @@ class Window(pyglet.window.Window):
         elif symbol == key.SPACE and not self.running:
             pyglet.clock.schedule_interval(self.update, self.frame_rate)
             self.running = True
+        elif symbol == key.RIGHT and not self.running:
+            self.game_of_life.run_rules()
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT:
