@@ -5,36 +5,73 @@ import pyglet.window.mouse as mouse
 
 from game_of_life import GameOfLife
 
+
+MOD_SHIFT = 0
+
+
 class Window(pyglet.window.Window):
-    def __init__(self, x, y, title):
-        super().__init__(x, y, title)
+    def __init__(self, width, height, cell_size, frame_rate, title):
+        super().__init__(width, height, title)
+        self.cell_size = cell_size
+        self.frame_rate = frame_rate
+        self.game_of_life = GameOfLife(width, height, cell_size)
+        self.running = False
+        self.fps_display = pyglet.clock.ClockDisplay()
 
-        x, y = self.get_size()
-        self.game_of_life = GameOfLife(x, y, 20)
-
-        pyglet.clock.schedule_interval(self.update, 1.0/6.0)
-        self.running = True
+        self.label_paused = pyglet.text.Label("PAUSED",
+                                              font_size=50,
+                                              color=(0, 0, 0, 255),
+                                              x=self.cell_size, y=self.cell_size,
+                                              anchor_x='left', anchor_y='bottom')
 
     def on_draw(self):
         self.clear()
         self.game_of_life.draw()
         self.game_of_life.draw_grid()
 
+        if not self.running:
+            self.label_paused.draw()
+
+        self.fps_display.draw()
+
     def on_key_press(self, symbol, modifiers):
         if symbol == key.SPACE and self.running:
             pyglet.clock.unschedule(self.update)
             self.running = False
-        else:
-            pyglet.clock.schedule_interval(self.update, 1.0/6.0)
+        elif symbol == key.SPACE and not self.running:
+            pyglet.clock.schedule_interval(self.update, self.frame_rate)
             self.running = True
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT:
-            print(x, y)
+            row = int(y / self.cell_size)
+            col = int(x / self.cell_size)
+
+            self.game_of_life.fill_cell(row, col)
+
+        if modifiers == 18 and button == mouse.LEFT:
+            row = int(y / self.cell_size)
+            col = int(x / self.cell_size)
+
+            self.game_of_life.empty_cell(row, col)
+
+    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        if buttons == mouse.LEFT:
+            row = int(y / self.cell_size)
+            col = int(x / self.cell_size)
+
+            self.game_of_life.fill_cell(row, col)
+
+        if modifiers == 18 and buttons == mouse.LEFT:
+            row = int(y / self.cell_size)
+            col = int(x / self.cell_size)
+
+            self.game_of_life.empty_cell(row, col)
 
     def update(self, dt):
         self.game_of_life.run_rules()
 
+
 if __name__ == '__main__':
-    window = Window(1280, 720, "Game of Life")
+    window = Window(1280, 720, 20, 1 / 12, "Game of Life")
     pyglet.app.run()
