@@ -43,6 +43,8 @@ class Window(pyglet.window.Window):
             self.running = True
         elif symbol == key.RIGHT and not self.running:
             self.game_of_life.run_rules()
+        elif symbol == key.C:
+            self.game_of_life.clear()
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT:

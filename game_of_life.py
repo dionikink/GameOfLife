@@ -95,3 +95,8 @@ class GameOfLife:
 
     def empty_cell(self, row, col):
         self.cells[row][col] = 0
+
+    def clear(self):
+        for row in range(0, self.grid_height):
+            for col in range(0, self.grid_width):
+                self.cells[row][col] = 0
