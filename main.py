@@ -49,7 +49,7 @@ class Window(pyglet.window.Window):
 
             self.game_of_life.fill_cell(row, col)
 
-        if modifiers == 18 and button == mouse.LEFT:
+        if button == mouse.RIGHT:
             row = int(y / self.cell_size)
             col = int(x / self.cell_size)
 
@@ -62,7 +62,7 @@ class Window(pyglet.window.Window):
 
             self.game_of_life.fill_cell(row, col)
 
-        if modifiers == 18 and buttons == mouse.LEFT:
+        if buttons == mouse.RIGHT:
             row = int(y / self.cell_size)
             col = int(x / self.cell_size)
 
